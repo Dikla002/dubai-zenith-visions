@@ -2,39 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Dubai Real Estate Luxury Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
+    /* Brand Colors - Luxury Dubai Theme */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 220 13% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 13% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 13% 18%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary Gold */
+    --primary: 43 74% 49%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 43 74% 65%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Deep Blue */
+    --secondary: 220 91% 20%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 43 74% 49%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 43 74% 49%;
+
+    /* Luxury Design Tokens */
+    --luxury-gold: 43 74% 49%;
+    --luxury-gold-light: 43 74% 65%;
+    --luxury-blue: 220 91% 20%;
+    --luxury-blue-light: 220 91% 35%;
+    --luxury-navy: 220 26% 14%;
+    --luxury-gray: 220 13% 18%;
+    --luxury-gray-light: 220 9% 46%;
+    --surface-elevated: 0 0% 98%;
+    --surface-subtle: 220 14% 96%;
+
+    /* Gradients */
+    --gradient-luxury: linear-gradient(135deg, hsl(var(--luxury-gold)) 0%, hsl(var(--luxury-gold-light)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--luxury-navy)) 0%, hsl(var(--luxury-blue)) 100%);
+    --gradient-overlay: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+
+    /* Shadows */
+    --shadow-luxury: 0 20px 40px -12px hsl(var(--luxury-gold) / 0.25);
+    --shadow-card: 0 4px 20px -2px hsl(220 13% 18% / 0.08);
+    --shadow-elevated: 0 8px 30px -4px hsl(220 13% 18% / 0.12);
+
+    /* Animations */
+    --transition-luxury: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s ease-out;
 
     --radius: 0.5rem;
 
@@ -100,6 +128,94 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
+  }
+
+  /* Bilingual Support */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  [dir="ltr"] {
+    text-align: left;
+  }
+}
+
+@layer components {
+  /* Luxury Components */
+  .luxury-gradient {
+    background: var(--gradient-luxury);
+  }
+
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .hero-overlay {
+    background: var(--gradient-overlay);
+  }
+
+  .shadow-luxury {
+    box-shadow: var(--shadow-luxury);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .transition-luxury {
+    transition: var(--transition-luxury);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  /* Property Card Hover Effects */
+  .property-card {
+    @apply bg-card border border-border rounded-lg overflow-hidden shadow-card transition-luxury hover:shadow-elevated hover:scale-[1.02];
+  }
+
+  /* Hero Text Animations */
+  .hero-title {
+    @apply text-4xl md:text-6xl lg:text-7xl font-bold leading-tight;
+    background: linear-gradient(135deg, #ffffff 0%, hsl(var(--luxury-gold-light)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* CTA Buttons */
+  .cta-primary {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-luxury hover:shadow-elevated transition-luxury;
+  }
+
+  .cta-secondary {
+    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground transition-luxury;
+  }
+
+  /* Navigation */
+  .nav-blur {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  /* Search Component */
+  .search-container {
+    @apply bg-white/95 backdrop-blur-sm border border-border rounded-2xl shadow-elevated;
+  }
+
+  /* RTL Support */
+  [dir="rtl"] .hero-title {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
   }
 }
