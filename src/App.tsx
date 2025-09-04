@@ -23,6 +23,7 @@ const App = () => (
       <LanguageProvider>
         <SearchProvider>
           <FavoritesProvider>
+            
             <TooltipProvider>
               <Toaster />
               <Sonner />
