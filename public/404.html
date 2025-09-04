@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <meta http-equiv="refresh" content="0;url=/" />
+    <script>
+      // GitHub Pages SPA redirect: preserve path after repo base
+      (function(){
+        var base = (document.querySelector('base') && document.querySelector('base').getAttribute('href')) || '/';
+        var path = window.location.pathname;
+        var repoBase = base;
+        if (!path.startsWith(repoBase)) repoBase = '/';
+        var target = repoBase + '#'+ path.replace(/^\//, '') + window.location.search + window.location.hash;
+        window.location.replace(base);
+      })();
+    </script>
+  </head>
+  <body></body>
+  </html>
+
+

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Globe, PhoneCall } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,10 +13,10 @@ const Navigation = () => {
   };
 
   const navItems = [
-    { key: 'nav.home', href: '#home' },
-    { key: 'nav.properties', href: '#properties' },
-    { key: 'nav.about', href: '#about' },
-    { key: 'nav.contact', href: '#contact' },
+    { key: 'nav.home', href: '/' },
+    { key: 'nav.properties', href: '/#properties' },
+    { key: 'nav.about', href: '/#about' },
+    { key: 'nav.contact', href: '/#contact' },
   ];
 
   return (
@@ -33,15 +34,15 @@ const Navigation = () => {
           <div className="hidden md:block">
             <div className="flex items-center space-x-8">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.key}
-                  href={item.href}
+                  to={item.href}
                   className="text-luxury-gray hover:text-primary transition-smooth font-medium"
                 >
                   {t(item.key)}
-                </a>
+                </Link>
               ))}
-              <a href="/favorites" className="text-luxury-gray hover:text-primary transition-smooth font-medium">Favorites</a>
+              <Link to="/favorites" className="text-luxury-gray hover:text-primary transition-smooth font-medium">Favorites</Link>
             </div>
           </div>
 
@@ -92,14 +93,14 @@ const Navigation = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-border">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.key}
-                  href={item.href}
+                  to={item.href}
                   className="block px-3 py-2 rounded-md text-luxury-gray hover:text-primary hover:bg-surface-subtle transition-smooth"
                   onClick={() => setIsOpen(false)}
                 >
                   {t(item.key)}
-                </a>
+                </Link>
               ))}
             </div>
           </div>

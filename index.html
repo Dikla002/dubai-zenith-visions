@@ -26,5 +26,16 @@
     <div id="root"></div>
     <link rel="preload" as="image" href="/src/assets/dubai-skyline-hero.jpg" />
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Handle GitHub Pages direct access to subpaths by redirecting to root with hash
+      (function() {
+        var isGhPages = location.hostname.endsWith('github.io');
+        if (!isGhPages) return;
+        if (location.pathname !== '/' && !location.pathname.includes('.')) {
+          var newUrl = '/' + '#' + location.pathname.replace(/^\//,'');
+          location.replace(newUrl + location.search + location.hash);
+        }
+      })();
+    </script>
   </body>
 </html>
