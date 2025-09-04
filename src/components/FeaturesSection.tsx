@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Handshake, Building2, Globe2 } from 'lucide-react';
+import { ShieldCheck, HeartHandshake, Building2, Globe2 } from 'lucide-react';
 
 const features = [
   {
@@ -8,7 +8,7 @@ const features = [
     desc: 'RERA certified advisors ensuring safe and transparent transactions.',
   },
   {
-    icon: Handshake,
+    icon: HeartHandshake,
     title: 'Personalized Service',
     desc: 'White-glove, end-to-end support tailored to your goals.',
   },
