@@ -24,8 +24,36 @@ const ContactForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    if (!formData.name.trim()) errors.push('Name is required');
+    if (!formData.email.trim()) errors.push('Email is required');
+    if (!formData.message.trim()) errors.push('Message is required');
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      errors.push('Please enter a valid email address');
+    }
+    
+    // Phone validation (optional but if provided, should be valid)
+    if (formData.phone && formData.phone.length < 10) {
+      errors.push('Please enter a valid phone number');
+    }
+    
+    return errors;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const errors = validateForm();
+    if (errors.length > 0) {
+      toast.error(errors[0]);
+      return;
+    }
+    
     setIsSubmitting(true);
 
     // Simulate form submission to Bitrix24 CRM

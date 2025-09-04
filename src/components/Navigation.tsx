@@ -25,9 +25,9 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <div className="text-xl font-bold text-luxury-navy">
+            <Link to="/" className="text-xl font-bold text-luxury-navy hover:text-primary transition-smooth">
               Tatweer Aldar
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}

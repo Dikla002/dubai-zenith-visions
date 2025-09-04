@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import LazyImage from './LazyImage';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useSearch } from '@/contexts/SearchContext';
 import { Link } from 'react-router-dom';
@@ -129,11 +130,9 @@ const PropertyListings = () => {
             <Card key={property.id} className="property-card group">
               {/* Property Image */}
               <div className="relative overflow-hidden">
-                <img 
+                <LazyImage 
                   src={property.image + '&auto=format&q=60'} 
                   alt={property.title}
-                  loading="lazy"
-                  decoding="async"
                   sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
