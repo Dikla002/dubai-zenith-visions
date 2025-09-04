@@ -59,7 +59,7 @@ const PropertyListings = () => {
       const max = maxStr?.includes('m') ? parseInt(maxStr.replace(/\D/g, '')) * 1_000_000 : parseInt(maxStr?.replace(/\D/g, '') || '0') * 1_000;
       const val = p.price.aed;
       if (filters.priceRange.endsWith('+')) return val >= min;
-      return val >= min && (!!max ? val <= max : true);
+      return val >= min && (max ? val <= max : true);
     })();
     const byArea = (() => {
       if (!filters.area) return true;

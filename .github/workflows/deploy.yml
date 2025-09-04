@@ -39,6 +39,7 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: /dubai-zenith-visions/
+          CI: false
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
