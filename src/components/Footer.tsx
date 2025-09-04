@@ -57,7 +57,7 @@ const Footer = () => {
                 placeholder="Enter your email"
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 h-12"
               />
-              <Button className="cta-primary h-12 px-6">
+              <Button className="cta-primary h-12 px-6" onClick={() => window.alert('Thanks! You are subscribed.') }>
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </div>

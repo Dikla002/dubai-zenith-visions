@@ -66,8 +66,10 @@ const AboutSection = () => {
             {/* Background Image */}
             <div className="relative">
               <img 
-                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop" 
+                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop&auto=format&q=60" 
                 alt="Dubai skyline" 
+                loading="lazy"
+                decoding="async"
                 className="w-full h-96 object-cover rounded-2xl shadow-elevated"
               />
               

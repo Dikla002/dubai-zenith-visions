@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, PhoneCall } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Navigation = () => {
@@ -41,11 +41,24 @@ const Navigation = () => {
                   {t(item.key)}
                 </a>
               ))}
+              <a href="/favorites" className="text-luxury-gray hover:text-primary transition-smooth font-medium">Favorites</a>
             </div>
           </div>
 
-          {/* Language Toggle & Mobile Menu Button */}
+          {/* Right Controls */}
           <div className="flex items-center space-x-4">
+            <a
+              href="https://wa.me/971501234567"
+              target="_blank"
+              rel="noreferrer"
+              className="hidden md:inline-flex items-center text-green-600 font-medium hover:opacity-80"
+            >
+              <PhoneCall className="h-4 w-4 mr-1" /> WhatsApp
+            </a>
+            <Button className="hidden md:inline-flex cta-primary h-9 px-4" onClick={() => {
+              const el = document.getElementById('contact');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}>List Your Property</Button>
             <Button
               variant="ghost"
               size="sm"

@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Bed, Bath, Square, Heart, Eye } from 'lucide-react';
+import { MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSearch } from '@/contexts/SearchContext';
+import { Link } from 'react-router-dom';
+import { properties as data } from '@/data/properties';
+import { useFavorites } from '@/contexts/FavoritesContext';
 
 interface Property {
   id: string;
@@ -20,81 +24,15 @@ interface Property {
 
 const PropertyListings = () => {
   const { t, direction } = useLanguage();
+  const { filters } = useSearch();
   const [currency, setCurrency] = useState<'aed' | 'usd'>('aed');
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
 
-  // Sample properties data
-  const properties: Property[] = [
-    {
-      id: '1',
-      title: 'Luxury Penthouse in Downtown',
-      location: 'Downtown Dubai',
-      price: { aed: 3500000, usd: 952000 },
-      bedrooms: 3,
-      bathrooms: 4,
-      sqft: 2800,
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&h=300&fit=crop',
-      type: 'Penthouse',
-      featured: true,
-    },
-    {
-      id: '2',
-      title: 'Modern Villa with Marina View',
-      location: 'Dubai Marina',
-      price: { aed: 4200000, usd: 1142000 },
-      bedrooms: 4,
-      bathrooms: 5,
-      sqft: 3500,
-      image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=500&h=300&fit=crop',
-      type: 'Villa',
-      featured: true,
-    },
-    {
-      id: '3',
-      title: 'Elegant Apartment in JBR',
-      location: 'Jumeirah Beach Residence',
-      price: { aed: 2100000, usd: 571000 },
-      bedrooms: 2,
-      bathrooms: 3,
-      sqft: 1850,
-      image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=500&h=300&fit=crop',
-      type: 'Apartment',
-    },
-    {
-      id: '4',
-      title: 'Waterfront Townhouse',
-      location: 'Palm Jumeirah',
-      price: { aed: 6800000, usd: 1850000 },
-      bedrooms: 5,
-      bathrooms: 6,
-      sqft: 4200,
-      image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=500&h=300&fit=crop',
-      type: 'Townhouse',
-      featured: true,
-    },
-    {
-      id: '5',
-      title: 'Contemporary Studio',
-      location: 'Business Bay',
-      price: { aed: 850000, usd: 231000 },
-      bedrooms: 0,
-      bathrooms: 1,
-      sqft: 650,
-      image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&h=300&fit=crop',
-      type: 'Studio',
-    },
-    {
-      id: '6',
-      title: 'Luxury Duplex in JLT',
-      location: 'Jumeirah Lakes Towers',
-      price: { aed: 2800000, usd: 761000 },
-      bedrooms: 3,
-      bathrooms: 3,
-      sqft: 2400,
-      image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&h=300&fit=crop',
-      type: 'Duplex',
-    },
-  ];
+  // Use centralized sample data
+  const properties: Property[] = data.map(p => ({
+    ...p,
+    image: p.image.replace('1400&h=800', '500&h=300'),
+  }));
 
   const formatPrice = (price: { aed: number; usd: number }) => {
     const amount = currency === 'aed' ? price.aed : price.usd;
@@ -106,34 +44,64 @@ const PropertyListings = () => {
     return `${currencySymbol} ${amount.toLocaleString()}`;
   };
 
-  const toggleFavorite = (propertyId: string) => {
-    setFavorites(prev => 
-      prev.includes(propertyId) 
-        ? prev.filter(id => id !== propertyId)
-        : [...prev, propertyId]
-    );
+  // favorites handled by context
+
+  const matchesFilters = (p: Property) => {
+    const query = (filters.searchQuery || '').toLowerCase();
+    const inQuery = !query || p.title.toLowerCase().includes(query) || p.location.toLowerCase().includes(query) || p.type.toLowerCase().includes(query);
+    const byType = !filters.propertyType || p.type.toLowerCase() === filters.propertyType.toLowerCase();
+    const byLocation = !filters.location || p.location.toLowerCase().includes(filters.location.replace('-', ' '));
+    const byPrice = (() => {
+      if (!filters.priceRange) return true;
+      const [minStr, maxStr] = filters.priceRange.split('-');
+      const min = parseInt(minStr.replace(/\D/g, '')) * (filters.priceRange.includes('m') ? 1_000_000 : 1_000);
+      const max = maxStr?.includes('m') ? parseInt(maxStr.replace(/\D/g, '')) * 1_000_000 : parseInt(maxStr?.replace(/\D/g, '') || '0') * 1_000;
+      const val = p.price.aed;
+      if (filters.priceRange.endsWith('+')) return val >= min;
+      return val >= min && (!!max ? val <= max : true);
+    })();
+    const byArea = (() => {
+      if (!filters.area) return true;
+      if (filters.area.endsWith('+')) return p.sqft >= parseInt(filters.area);
+      const [min, max] = filters.area.split('-').map((n) => parseInt(n));
+      return p.sqft >= min && p.sqft <= max;
+    })();
+    // category currently not restricting; can plug into data when category available
+    return inQuery && byType && byLocation && byPrice && byArea;
   };
 
   return (
     <section id="properties" className="py-20 bg-surface-subtle">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-bold text-luxury-navy mb-4 ${
-            direction === 'rtl' ? 'font-arabic' : ''
-          }`}>
-            {t('properties.title')}
-          </h2>
-          <p className="text-xl text-luxury-gray-light max-w-2xl mx-auto">
-            {t('properties.subtitle')}
-          </p>
-          
+        <div className="mb-10">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className={`text-2xl md:text-3xl font-bold text-luxury-navy ${
+                direction === 'rtl' ? 'font-arabic' : ''
+              }`}>
+                Featured properties list
+              </h2>
+              <p className="text-sm md:text-base text-luxury-gray-light mt-2">
+                Explore our curated selection of listings across Dubai’s prime communities.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="w-9 h-9 rounded-full border border-border flex items-center justify-center bg-white hover:bg-surface-elevated transition-smooth" aria-label="Previous">
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button className="w-9 h-9 rounded-full border border-border flex items-center justify-center bg-white hover:bg-surface-elevated transition-smooth" aria-label="Next">
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
           {/* Currency Toggle */}
-          <div className="mt-8 flex justify-center">
-            <div className="bg-white rounded-lg p-1 shadow-card">
+          <div className="mt-6">
+            <div className="inline-flex bg-white rounded-lg p-1 shadow-card">
               <button
                 onClick={() => setCurrency('aed')}
-                className={`px-6 py-2 rounded-md font-medium transition-smooth ${
+                className={`px-5 py-2 rounded-md text-sm font-medium transition-smooth ${
                   currency === 'aed' 
                     ? 'bg-primary text-white shadow-sm' 
                     : 'text-luxury-gray hover:text-primary'
@@ -143,7 +111,7 @@ const PropertyListings = () => {
               </button>
               <button
                 onClick={() => setCurrency('usd')}
-                className={`px-6 py-2 rounded-md font-medium transition-smooth ${
+                className={`px-5 py-2 rounded-md text-sm font-medium transition-smooth ${
                   currency === 'usd' 
                     ? 'bg-primary text-white shadow-sm' 
                     : 'text-luxury-gray hover:text-primary'
@@ -157,13 +125,16 @@ const PropertyListings = () => {
 
         {/* Properties Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {properties.map((property) => (
+          {properties.filter(matchesFilters).map((property) => (
             <Card key={property.id} className="property-card group">
               {/* Property Image */}
               <div className="relative overflow-hidden">
                 <img 
-                  src={property.image} 
+                  src={property.image + '&auto=format&q=60'} 
                   alt={property.title}
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 
@@ -181,13 +152,13 @@ const PropertyListings = () => {
                 <button
                   onClick={() => toggleFavorite(property.id)}
                   className={`absolute top-4 right-4 p-2 rounded-full transition-smooth ${
-                    favorites.includes(property.id)
+                    isFavorite(property.id)
                       ? 'bg-red-500 text-white'
                       : 'bg-white/80 text-luxury-gray hover:bg-white hover:text-red-500'
                   }`}
                 >
                   <Heart className={`h-5 w-5 ${
-                    favorites.includes(property.id) ? 'fill-current' : ''
+                    isFavorite(property.id) ? 'fill-current' : ''
                   }`} />
                 </button>
               </div>
@@ -231,13 +202,15 @@ const PropertyListings = () => {
               </CardContent>
 
               <CardFooter className="p-6 pt-0">
-                <Button 
-                  className="w-full cta-secondary group"
-                  variant="outline"
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  {t('properties.view')}
-                </Button>
+                <Link to={`/property/${property.id}`} className="w-full">
+                  <Button 
+                    className="w-full cta-secondary group"
+                    variant="outline"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    {t('properties.view')}
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))}

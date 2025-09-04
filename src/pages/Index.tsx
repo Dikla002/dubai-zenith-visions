@@ -4,6 +4,14 @@ import HeroSection from '@/components/HeroSection';
 import PropertySearch from '@/components/PropertySearch';
 import PropertyListings from '@/components/PropertyListings';
 import AboutSection from '@/components/AboutSection';
+import FeaturesSection from '@/components/FeaturesSection';
+import CommunityGuides from '@/components/CommunityGuides';
+import CTAListProperty from '@/components/CTAListProperty';
+import Testimonials from '@/components/Testimonials';
+import JoinOurTeam from '@/components/JoinOurTeam';
+import NewsSection from '@/components/NewsSection';
+import FAQs from '@/components/FAQs';
+import RecommendedLinks from '@/components/RecommendedLinks';
 import ContactForm from '@/components/ContactForm';
 import Footer from '@/components/Footer';
 
@@ -20,6 +28,14 @@ const Index = () => {
       
       <PropertyListings />
       <AboutSection />
+      <FeaturesSection />
+      <CommunityGuides />
+      <CTAListProperty />
+      <Testimonials />
+      <JoinOurTeam />
+      <NewsSection />
+      <FAQs />
+      <RecommendedLinks />
       <ContactForm />
       <Footer />
     </div>

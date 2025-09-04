@@ -1,11 +1,18 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play } from 'lucide-react';
+import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
 import heroImage from '@/assets/dubai-skyline-hero.jpg';
 
 const HeroSection = () => {
   const { t, direction } = useLanguage();
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -46,6 +53,7 @@ const HeroSection = () => {
             <Button 
               size="lg" 
               className="cta-primary px-8 py-4 text-lg font-semibold group"
+              onClick={() => scrollTo('properties')}
             >
               {t('hero.cta.primary')}
               <ArrowRight className={`ml-2 h-5 w-5 transition-transform group-hover:translate-x-1 ${
@@ -57,6 +65,7 @@ const HeroSection = () => {
               size="lg" 
               variant="outline"
               className="cta-secondary border-white/30 text-white hover:bg-white hover:text-luxury-navy px-8 py-4 text-lg font-semibold group"
+              onClick={() => scrollTo('contact')}
             >
               <Play className={`mr-2 h-5 w-5 ${direction === 'rtl' ? 'rtl-flip' : ''}`} />
               {t('hero.cta.secondary')}

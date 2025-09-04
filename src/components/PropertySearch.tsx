@@ -2,28 +2,35 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, MapPin, DollarSign, Home } from 'lucide-react';
+import { Search, MapPin, DollarSign, Home, Square } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSearch } from '@/contexts/SearchContext';
 
 interface SearchFilters {
+  category: string;
+  propertyType: string;
   location: string;
   priceRange: string;
-  propertyType: string;
+  area: string;
   searchQuery: string;
 }
 
 const PropertySearch = () => {
   const { t, direction } = useLanguage();
+  const { setFilters: setGlobalFilters } = useSearch();
   const [filters, setFilters] = useState<SearchFilters>({
+    category: 'buy',
+    propertyType: '',
     location: '',
     priceRange: '',
-    propertyType: '',
+    area: '',
     searchQuery: '',
   });
 
   const handleSearch = () => {
-    console.log('Search filters:', filters);
-    // Here you would implement the actual search logic
+    setGlobalFilters(filters);
+    const el = document.getElementById('properties');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -51,7 +58,24 @@ const PropertySearch = () => {
         </div>
 
         {/* Advanced Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              Buy / Rent / Off-plan / Commercial
+            </label>
+            <Select value={filters.category} onValueChange={(value) => setFilters({ ...filters, category: value })}>
+              <SelectTrigger className="h-11">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="buy">Buy</SelectItem>
+                <SelectItem value="rent">Rent</SelectItem>
+                <SelectItem value="offplan">Off-plan</SelectItem>
+                <SelectItem value="commercial">Commercial</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <MapPin className="h-4 w-4" />
@@ -106,6 +130,24 @@ const PropertySearch = () => {
                 <SelectItem value="penthouse">Penthouse</SelectItem>
                 <SelectItem value="townhouse">Townhouse</SelectItem>
                 <SelectItem value="studio">Studio</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <Square className="h-4 w-4" />
+              Area (Sq Ft)
+            </label>
+            <Select value={filters.area} onValueChange={(value) => setFilters({ ...filters, area: value })}>
+              <SelectTrigger className="h-11">
+                <SelectValue placeholder="Select area" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0-1000">0 - 1,000</SelectItem>
+                <SelectItem value="1000-2000">1,000 - 2,000</SelectItem>
+                <SelectItem value="2000-3000">2,000 - 3,000</SelectItem>
+                <SelectItem value="3000+">3,000+</SelectItem>
               </SelectContent>
             </Select>
           </div>
