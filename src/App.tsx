@@ -10,6 +10,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PropertyDetails from "./pages/PropertyDetails";
 import Favorites from "./pages/Favorites";
+import NewsList from "./pages/NewsList";
+import NewsPost from "./pages/NewsPost";
+import HashScroll from "@/components/HashScroll";
 
 const queryClient = new QueryClient();
 
@@ -22,10 +25,13 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <HashScroll />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/property/:id" element={<PropertyDetails />} />
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/news" element={<NewsList />} />
+            <Route path="/news/:slug" element={<NewsPost />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
